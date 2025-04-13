@@ -3,7 +3,6 @@
 	This problem requires you to implement a basic interface for a binary tree
 */
 
-//I AM NOT DONE
 use std::cmp::Ordering;
 use std::fmt::Debug;
 
@@ -51,12 +50,73 @@ where
     // Insert a value into the BST
     fn insert(&mut self, value: T) {
         //TODO
+        //step1 comfirm if root is None or not
+        //step2 if root is None, insert value
+        //step3 if root is not None, compare value with root value
+        //step4 if value is less than root value, insert into left subtree
+        //step5 if value is greater than root value, insert into right subtree
+        //step6 if value is equal to root value, do nothing
+        //step7 again, if left or right subtree is None, insert value
+        //step8 if left or right subtree is not None, call insert function recursively
+        match self.root {
+            Some(ref mut node) => { //if matched，get the ref mut of node
+                match node.value.cmp(&value) {
+                    Ordering::Less => {
+                        if node.right.is_none() {
+                            node.right = Some(Box::new(TreeNode::new(value)));
+                        } else {
+                            node.right.as_mut().unwrap().insert(value);
+                        }
+                    }
+                    Ordering::Greater => {
+                        if node.left.is_none() {
+                            node.left = Some(Box::new(TreeNode::new(value)));
+                        } else {
+                            node.left.as_mut().unwrap().insert(value);
+                        }
+                    }
+                    Ordering::Equal => {} // Do nothing for duplicates
+                }
+            }
+            None => {
+                self.root = Some(Box::new(TreeNode::new(value)));
+            }
+        }
     }
 
     // Search for a value in the BST
     fn search(&self, value: T) -> bool {
         //TODO
-        true
+        //step1 comfirm if root is None or not
+        //step2 if root is None, return false
+        //step3 if root is not None, compare value with root value
+        //step4 if value is less than root value, search in left subtree
+        //step5 if value is greater than root value, search in right subtree
+        //step6 if value is equal to root value, return true
+        //step7 again, if left or right subtree is None, return false
+        //step8 if left or right subtree is not None, call search function recursively
+        match &self.root {
+            Some(node) => {
+                match node.value.cmp(&value) {
+                    Ordering::Less => {
+                        if let Some(ref right) = node.right {
+                            right.search(value)
+                        } else {
+                            false
+                        }
+                    }
+                    Ordering::Greater => {
+                        if let Some(ref left) = node.left {
+                            left.search(value)
+                        } else {
+                            false
+                        }
+                    }
+                    Ordering::Equal => true,
+                }
+            }
+            None => false,
+        }
     }
 }
 
@@ -67,6 +127,56 @@ where
     // Insert a node into the tree
     fn insert(&mut self, value: T) {
         //TODO
+        //step1 comfirm if value is less than root value
+        //step2 if value is less than root value, insert into left subtree
+        //step3 if value is greater than root value, insert into right subtree
+        //step4 if value is equal to root value, do nothing
+        //step5 again, if left or right subtree is None, insert value
+        //step6 if left or right subtree is not None, call insert function recursively
+        match self.value.cmp(&value) {
+            Ordering::Less => {
+                if let Some(ref mut right) = self.right {
+                    right.insert(value);
+                } else {
+                    self.right = Some(Box::new(TreeNode::new(value)));
+                }
+            }
+            Ordering::Greater => {
+                if let Some(ref mut left) = self.left {
+                    left.insert(value);
+                } else {
+                    self.left = Some(Box::new(TreeNode::new(value)));
+                }
+            }
+            Ordering::Equal => {} // Do nothing for duplicates
+        }
+    }
+
+    fn search(&self, value: T) -> bool {
+        //TODO
+        //step1 comfirm if value is less than root value
+        //step2 if value is less than root value, search in left subtree
+        //step3 if value is greater than root value, search in right subtree
+        //step4 if value is equal to root value, return true
+        //step5 again, if left or right subtree is None, return false
+        //step6 if left or right subtree is not None, call search function recursively
+        match self.value.cmp(&value) {
+            Ordering::Greater => {
+                if let Some(ref left) = self.left {
+                    left.search(value)
+                } else {
+                    false
+                }
+            }
+            Ordering::Less => {
+                if let Some(ref right) = self.right {
+                    right.search(value)
+                } else {
+                    false
+                }
+            }
+            Ordering::Equal => true,
+        }
     }
 }
 
@@ -121,6 +231,4 @@ mod tests {
             None => panic!("Root should not be None after insertion"),
         }
     }
-}    
-
-
+}

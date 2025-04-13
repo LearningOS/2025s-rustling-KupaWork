@@ -2,7 +2,6 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -69,15 +68,49 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+	pub fn merge(mut list_a:LinkedList<T>,mut list_b:LinkedList<T>) -> Self
+    where
+        T: std::cmp::Ord+Clone,
 	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+		let mut indexOfListA = 0;
+        let mut indexOfListB = 0;
+        let mut list_c = LinkedList::<T>::new();
+        let mut vec_c = Vec::<T>::new();
+
+        while indexOfListA < list_a.length && indexOfListB < list_b.length {
+            let ref_val_a = unsafe { list_a.get(indexOfListA as i32).unwrap()};
+            let ref_val_b = unsafe { list_b.get(indexOfListB as i32).unwrap()};
+            let a = (*ref_val_a).clone();
+            let b = (*ref_val_b).clone();
+            
+            vec_c.push(a);
+            vec_c.push(b);
+   
+            indexOfListA += 1;
+            indexOfListB += 1;
+    
         }
-	}
+
+        while indexOfListA < list_a.length {
+            let ref_val_a = unsafe { list_a.get(indexOfListA as i32).unwrap() };
+            let a = (*ref_val_a).clone();
+            vec_c.push(a);
+            indexOfListA += 1;
+        }
+
+        while indexOfListB < list_b.length {
+            let ref_val_b = unsafe { list_b.get(indexOfListB as i32).unwrap() };
+            let b = (*ref_val_b).clone();
+            vec_c.push(b);
+            indexOfListB += 1;
+        }
+        vec_c.sort();
+        for i in 0..vec_c.len() {
+            list_c.add(vec_c[i].clone());
+        }
+        list_c
+        
+    }
 }
 
 impl<T> Display for LinkedList<T>
